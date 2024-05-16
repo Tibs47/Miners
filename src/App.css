@@ -62,14 +62,13 @@
 }
 
 .popup-holder {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.7);
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   margin: 0 auto;
   width: 100%;
-  border: solid 1px gray;
   .popup {
     background-color: rgba(0, 0, 0, 0.95);
     border-radius: 5px;

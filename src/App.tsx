@@ -103,12 +103,12 @@ function App() {
             <div className='miner-data'>
               <div> <b>PDU:</b> {selectedMiner.pdu}</div>
               <div> <b>Port:</b> {selectedMiner.port}</div>
-              <div> <b>Hashrate 5s:</b> {selectedMiner.TH5s} h/s</div>
-              <div> <b>Hashrate 1h:</b> {selectedMiner.THAvg} h/s</div>
-              <div> <b>Frequency:</b> {selectedMiner.freq} MHz</div>
-              <div> <b>Status:</b> {statusSetter(selectedMiner.s)} </div>
-              <div> <b>Temperature:</b> {selectedMiner.tB} &deg;C</div>
-              <div> <b>Power:</b> {selectedMiner.w} W</div>
+              <div> <b>Hashrate 5s:</b> {selectedMiner.TH5s || 'no data'} h/s</div>
+              <div> <b>Hashrate 1h:</b> {selectedMiner.THAvg || 'no data'} h/s</div>
+              <div> <b>Frequency:</b> {selectedMiner.freq || 'no data'} MHz</div>
+              <div> <b>Status:</b> {statusSetter(selectedMiner.s) || 'no data'} </div>
+              <div> <b>Temperature:</b> {selectedMiner.tB || 'no data'} &deg;C</div>
+              <div> <b>Power:</b> {selectedMiner.w || 'no data'} W</div>
             </div>
             <h2>
               <button onClick={() => setSelectedMiner(null)}>Close</button>
