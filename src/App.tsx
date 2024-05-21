@@ -1,7 +1,7 @@
 import data from './assets/data/miners.json';
 import './App.css';
 import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
 interface Miner {
   TH5s?: number;
@@ -16,6 +16,12 @@ interface Miner {
 
 interface MinersByPDU {
   [key: string]: Miner[];
+}
+
+interface StatusCount {
+  status: string;
+  count: number;
+  color: string;
 }
 
 function hasValidData(miner: Miner): boolean {
@@ -65,33 +71,52 @@ function App() {
   };
 
   const minersByPDU: MinersByPDU = {};
+  
+  const statusCount: StatusCount[] = [
+    { status: 'OK', count: 0, color: '#50C804' },
+    { status: 'Hashrate loss', count: 0, color: '#7499FF' },
+    { status: 'Warning', count: 0, color: '#FFC859' },
+    { status: 'Minor issue', count: 0, color: '#FFBF00' },
+    { status: 'Major issue', count: 0, color: '#E97659' },
+    { status: 'Critical state', count: 0, color: '#EF1818' }
+  ];
 
   data[19]?.values.forEach(miner => {
     if (!minersByPDU[miner.pdu]) {
       minersByPDU[miner.pdu] = [];
     }
     minersByPDU[miner.pdu].push(miner);
-  });  
 
-  const statusCount = [
-    { status: 'OK', count: 0 },
-    { status: 'Hashrate loss', count: 0 },
-    { status: 'Warning', count: 0 },
-    { status: 'Minor issue', count: 0 },
-    { status: 'Major issue', count: 0 },
-    { status: 'Critical state', count: 0 }
-  ];
-  
-  data[19]?.values.forEach(miner => {
     const foundItem = statusCount.find(item => item.status === statusSetter(miner.s));
     if (foundItem) {
       foundItem.count += 1;
     }
-  });
+  });  
+
+  interface CustomTooltipProps {
+    active?: boolean;
+    payload?: Array<{ value: any; payload: StatusCount }>;
+    label?: string;
+  }
+
+  const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const count = payload[0].value;
+
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{`${label} : ${count}`}</p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
 
   return (
     <>
-      <div className='container'> 
+      <div className='container'>
         <div className='title-flex'>
           <h1 className='title'>{data[19].name}</h1>
           <h1 className='graph-icon' onClick={() => setGraphs(true)}> GRAPHS </h1>
@@ -139,14 +164,24 @@ function App() {
         <div className='popup-holder'>
           <div className='popup'>
             <div className='chart-box'>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={statusCount}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="status" />
                 <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="count" fill="#8884d8" />
+                <Tooltip content={<CustomTooltip />} cursor={{fill: 'transparent'}} />
+                <Legend
+                  payload={statusCount.map((entry) => ({
+                    value: entry.status,
+                    type: 'square',
+                    color: entry.color
+                  }))}
+                />
+                <Bar dataKey="count">
+                  {statusCount.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
             </div>
