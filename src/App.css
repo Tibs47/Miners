@@ -31,16 +31,17 @@
 .pdu-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0 2%;
   .pdu {
     border: solid 1px gray;
     border-radius: 10px;
     margin: 1%;
+    min-width: 30%;
     .miner-list {
       display: flex;
       flex-wrap: wrap;
-      justify-content: left;
+      justify-content: center;
       margin: 1em;
       .miner-port {
         width: 18px;
@@ -54,8 +55,12 @@
         text-align: center;
         color: black;
       }
-      .miner-port:hover {
+      .miner-port:hover { 
         cursor: pointer;
+        box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.8);
+        color: white;
+        transition: 200ms ease-in-out;
+        filter: brightness(80%);
       }
     }
   }
@@ -70,16 +75,22 @@
   margin: 0 auto;
   width: 100%;
   .popup {
+    padding: 1%;
     background-color: rgba(0, 0, 0, 0.95);
     border-radius: 5px;
     border: 1px solid gray;
-    padding: 1%;
-    width: 50%;
-    margin: 5% auto;
+    width: 70%;
+    margin: 10% auto;
     .miner-data {
       width: 80%;
       margin: 0 auto;
       text-align: left;
+    }
+    .chart-box{
+      padding: 1%;
+      margin: 0 auto;
+      height: 400px;
+      width: 90%;
     }
     button {
       padding: 1% 10%;
@@ -87,6 +98,34 @@
       background-color: gray;
       border-radius: 5px;
       font-size: 20px;
+    }
+    button:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .pdu {
+    border: solid 1px gray;
+    border-radius: 10px;
+    margin: 1%;
+    max-width: 100%;
+    min-width: 0%;
+    width: 100%;
+  }
+  .container {
+    .title-flex {
+      .title {
+        font-size: 20px;
+        margin: 0;
+        margin-left: 5%;
+      }
+      .graph-icon {
+        font-size: 20px;
+        margin: 0;
+        margin-right: 5%;
+      }
     }
   }
 }

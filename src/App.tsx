@@ -1,6 +1,7 @@
 import data from './assets/data/miners.json';
 import './App.css';
 import { useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface Miner {
   TH5s?: number;
@@ -57,7 +58,7 @@ function colorSetter(status: any): any {
 
 function App() {
   const [selectedMiner, setSelectedMiner] = useState<Miner | null>(null);
-
+  const [graphs, setGraphs] = useState <boolean | null> (null);
 
   const handleMinerClick = (miner: Miner) => {
     setSelectedMiner(miner);
@@ -70,6 +71,22 @@ function App() {
       minersByPDU[miner.pdu] = [];
     }
     minersByPDU[miner.pdu].push(miner);
+  });  
+
+  const statusCount = [
+    { status: 'OK', count: 0 },
+    { status: 'Hashrate loss', count: 0 },
+    { status: 'Warning', count: 0 },
+    { status: 'Minor issue', count: 0 },
+    { status: 'Major issue', count: 0 },
+    { status: 'Critical state', count: 0 }
+  ];
+  
+  data[19]?.values.forEach(miner => {
+    const foundItem = statusCount.find(item => item.status === statusSetter(miner.s));
+    if (foundItem) {
+      foundItem.count += 1;
+    }
   });
 
   return (
@@ -77,7 +94,7 @@ function App() {
       <div className='container'> 
         <div className='title-flex'>
           <h1 className='title'>{data[19].name}</h1>
-          <h1 className='graph-icon'> GRAPHS... </h1>
+          <h1 className='graph-icon' onClick={() => setGraphs(true)}> GRAPHS </h1>
         </div>
           <div className='pdu-list'>
             {Object.entries(minersByPDU).map(([pdu, miners]) => (
@@ -96,6 +113,7 @@ function App() {
             ))}
           </div>
       </div>
+
       {selectedMiner && (
         <div className='popup-holder'>
           <div className="popup">
@@ -113,6 +131,26 @@ function App() {
             <h2>
               <button onClick={() => setSelectedMiner(null)}>Close</button>
             </h2>
+          </div>
+        </div>
+      )}
+
+      {graphs && (
+        <div className='popup-holder'>
+          <div className='popup'>
+            <div className='chart-box'>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={statusCount}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="status" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+            </div>
+            <button onClick={() => setGraphs(null)}>Close</button>
           </div>
         </div>
       )}
