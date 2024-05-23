@@ -85,7 +85,7 @@ function App() {
     if (!minersByPDU[miner.pdu]) {
       minersByPDU[miner.pdu] = [];
     }
-    minersByPDU[miner.pdu].push(miner);
+    minersByPDU[miner.pdu].unshift(miner);
 
     const foundItem = statusCount.find(item => item.status === statusSetter(miner.s));
     if (foundItem) {
